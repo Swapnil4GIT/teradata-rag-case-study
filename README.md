@@ -1,0 +1,1 @@
+# teradata-rag-case-study
