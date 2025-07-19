@@ -27,3 +27,5 @@ options:
   substitution_option: ALLOW_LOOSE
 
 timeout: "3200s"
+
+logging: CLOUD_LOGGING_ONLY
