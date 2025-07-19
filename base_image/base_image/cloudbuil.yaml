@@ -20,8 +20,8 @@ steps:
 substitutions:
   _ARTIFACT_ID: "base_image"
   _ARTIFACT_VERSION: "1.0.0"
-  _PROJECT_ID: "your-gcp-project-id"
-  _REPOSITORY_NAME: "your-repository-name"
+  _PROJECT_ID: "thermal-effort-466412-a6"
+  _REPOSITORY_NAME: "custom-image-repository"
 
 options:
   substitution_option: ALLOW_LOOSE
