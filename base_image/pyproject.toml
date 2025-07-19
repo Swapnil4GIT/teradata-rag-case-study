@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "base_image"
+version = "0.1.0"
+description = "Base image for Teradata RAG case study"
+authors = ["Swapnil Tayade <tayadeswapnils@gmail.com>"]
+packages = [{ include = "base_image" }]
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.12"
+pandas = "*"
+
+
+[tool.poetry.dev-dependencies]
+black = "^23.3.0"
+isort = "^5.12.0"
+flake8 = "^7.0.0"
+pre-commit = "^3.2.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
