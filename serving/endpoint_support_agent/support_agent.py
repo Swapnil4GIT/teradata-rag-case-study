@@ -3,5 +3,5 @@ from fastapi import FastAPI
 app = FastAPI()
 
 @app.get("/predict")
-def predict():
+def predict() -> dict:
     return {"message": "Hello, World!"}
