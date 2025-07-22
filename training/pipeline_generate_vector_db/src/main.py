@@ -2,7 +2,7 @@ import functions_framework
 import os
 import logging
 from dotenv import load_dotenv
-from shared.SecretManager import SecretManager
+from SecretManager import SecretManager
 
 logger = logging.getLogger(__name__)
 
