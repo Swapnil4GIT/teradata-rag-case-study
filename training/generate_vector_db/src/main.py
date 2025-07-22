@@ -4,7 +4,11 @@ import logging
 from dotenv import load_dotenv
 from SecretManager import SecretManager
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,  # Set the logging level to INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]  # Ensure logs are sent to stdout
+)
 logger = logging.getLogger(__name__)
 
 class VectorDBGenerator:
