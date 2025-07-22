@@ -4,6 +4,7 @@ import os
 
 import functions_framework
 from dotenv import load_dotenv
+from GcsManager import GcsManager
 from langchain.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_chroma import Chroma
@@ -40,6 +41,7 @@ class VectorDBGenerator:
         # Initialize the SecretManager
         self.secret_manager = SecretManager(self.project_number)
         os.environ["OPENAI_API_KEY"] = self.secret_manager.get_secret("llm_key")
+        self.gcs_manager = GcsManager()
 
     def generate(self, request):
         """
@@ -103,6 +105,17 @@ class VectorDBGenerator:
             )
         except Exception as e:
             print(f"Error while creating the vectorstore: {e}")
+            raise
+
+        try:
+            self.gcs_manager.upload_to_gcs(
+                source_directory=self.vector_db,
+                bucket_name=self.knowledge_base,
+                destination_prefix="vector_db",
+            )
+            print("Vector database uploaded to GCS successfully.")
+        except Exception as e:
+            print(f"Error while uploading vector database to GCS: {e}")
             raise
 
         return {"status": "Vector database generation initiated."}
