@@ -8,3 +8,4 @@ langchain-community==0.3.27
 openai==1.97.0
 chromadb==1.0.15
 google-cloud-secret-manager==2.24.0
+google-cloud-storage==3.2.0
