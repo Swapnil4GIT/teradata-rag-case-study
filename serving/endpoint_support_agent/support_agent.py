@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
+from llm_request import LLMRequest
 from schema import PredictRequest
 
 app = FastAPI()
@@ -59,7 +60,13 @@ def predict(payload: dict[str, str]):
         print(request.query)
         print(request.query_id)
         print(request.session_id)
-        return {"message": f"Query processed: {request.query}"}
+        llm = LLMRequest(
+            vectorstore=vectorstore,
+            query=request.query,
+            prompt_name="system_prompt",
+        )
+        response = llm.invoke(request.query)
+        return {"response": response}
     except Exception as e:
         print(f"Error during prediction: {e}")
         return {"error": "An error occurred during prediction."}
