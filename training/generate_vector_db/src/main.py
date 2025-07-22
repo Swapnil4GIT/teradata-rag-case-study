@@ -105,8 +105,6 @@ class VectorDBGenerator:
             print(f"Error while creating the vectorstore: {e}")
             raise
 
-        print(f"Vectorstore created with {vectorstore._collection.count()} documents")
-
         return {"status": "Vector database generation initiated."}
 
 
