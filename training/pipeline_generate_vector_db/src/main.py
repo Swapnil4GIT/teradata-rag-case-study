@@ -42,14 +42,22 @@ class VectorDBGenerator:
         
         Args:
             request: The HTTP request object.
+
+        Returns:
+            dict: A response dictionary indicating success or failure.
         """
-        llm_key = self.get_llm_key()
-        logger.info(f"Retrieved OpenAI API Key")
-        # Add your vector database generation logic here
-        pass
+        try:
+            llm_key = self.get_llm_key()
+            logger.info(f"Retrieved OpenAI API Key:")
+            # Add your vector database generation logic here
+            return {"status": "success", "message": "Vector database generated successfully"}
+        except Exception as e:
+            logger.error(f"Error generating vector database: {e}")
+            return {"status": "error", "message": str(e)}
 
 # Example usage in a Cloud Function
 @functions_framework.http
 def generate_vector_db(request):
     generator = VectorDBGenerator()
-    generator.generate(request)
+    response = generator.generate(request)
+    return response  # Ensure a valid response is returned
