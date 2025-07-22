@@ -10,11 +10,11 @@ steps:
       - --region=us-central1
       - --memory=512Mi
       - --timeout=3600s
-      - --source=training/pipeline_generate_vector_db/src
+      - --source=training/generate_vector_db/src
       - --runtime=python311
       - --entry-point=generate_vector_db
       - --trigger-http
       - --service-account=270035285032-compute@developer.gserviceaccount.com
-      - --env-vars-file=training/pipeline_generate_vector_db/build-deploy/.env.yaml
+      - --env-vars-file=training/generate_vector_db/build-deploy/.env.yaml
 options:
   logging: CLOUD_LOGGING_ONLY
