@@ -12,7 +12,7 @@ steps:
     - --timeout=3200s
     - --source=training/pipeline_generate_vector_db/src
     - --runtime=python311
-    - --entry-point=main
+    - --entry-point=generate_vector_db
     - --trigger-http
     - --allow-unauthenticated
     - --env-vars-file=training/pipeline_generate_vector_db/build-deploy/.env.yaml

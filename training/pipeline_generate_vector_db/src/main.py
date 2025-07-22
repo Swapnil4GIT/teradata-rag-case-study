@@ -7,29 +7,20 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.schema import Document
 from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
+import logging
+
+from shared.SecretManager import SecretManager
+
+logger = logging.getLogger(__name__)
 
 @functions_framework.http
 def generate_vector_db(request):
     # Load environment variables
     load_dotenv()
-
+    llm_key = os.getenv("llm_key")
+    knowledge_base = os.getenv("knowledge_base")
+    vector_db = os.getenv("vector_db")
     # Get the directory path from the request
-    request_json = request.get_json(silent=True)
-    if not request_json or 'directory_path' not in request_json:
-        return 'Directory path not provided', 400
-
-    directory_path = request_json['directory_path']
-
-    # Load text files from the specified directory
-    loader = DirectoryLoader(directory_path, glob="**/*.txt", loader_cls=TextLoader)
-    documents = loader.load()
-
-    # Split documents into smaller chunks
-    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    split_docs = text_splitter.split_documents(documents)
-
-    # Create embeddings and vector store
-    embeddings = OpenAIEmbeddings()
-    vector_store = Chroma.from_documents(split_docs, embeddings)
-
-    return 'Vector database generated successfully', 200
+    logger.info(f"llm_key: {llm_key}")
+    logger.info(f"knowledge_base: {knowledge_base}")
+    logger.info(f"vector_db: {vector_db}")
