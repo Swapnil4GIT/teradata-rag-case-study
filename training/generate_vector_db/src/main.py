@@ -1,26 +1,28 @@
-import functions_framework
-import os
-import logging
-from dotenv import load_dotenv
-from SecretManager import SecretManager
 import glob
+import logging
+import os
+
+import functions_framework
+from dotenv import load_dotenv
 from langchain.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.schema import Document
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_chroma import Chroma
+from langchain_openai import OpenAIEmbeddings
+from SecretManager import SecretManager
 
 logging.basicConfig(
     level=logging.INFO,  # Set the logging level to INFO
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()]  # Ensure logs are sent to stdout
+    handlers=[logging.StreamHandler()],  # Ensure logs are sent to stdout
 )
 logger = logging.getLogger(__name__)
+
 
 class VectorDBGenerator:
     def __init__(self):
         """
-        Initialize the VectorDBGenerator by loading environment variables and setting up the SecretManager.
+        Initialize the VectorDBGenerator by loading environment variables and
+        setting up the SecretManager.
         """
         # Load environment variables
         load_dotenv()
@@ -41,27 +43,34 @@ class VectorDBGenerator:
 
     def generate(self, request):
         """
-        Generate the vector database using the provided request data.        
+        Generate the vector database using the provided request data.
         """
         print("Received request for vector generation.")
-        
+
         try:
             folders = glob.glob("knowledge-base/*")
             if not folders:
-                raise FileNotFoundError("No folders found in the 'knowledge-base' directory.")
+                raise FileNotFoundError(
+                    "No folders found in the 'knowledge-base' directory."
+                )
         except FileNotFoundError as fnf_error:
             print(f"File not found error: {fnf_error}")
             raise
         except Exception as e:
             print(f"Unexpected error while accessing folders: {e}")
             raise
-        
-        text_loader_kwargs = {'encoding': 'utf-8'}
+
+        text_loader_kwargs = {"encoding": "utf-8"}
         documents = []
         try:
             for folder in folders:
                 doc_type = os.path.basename(folder)
-                loader = DirectoryLoader(folder, glob="**/*.md", loader_cls=TextLoader, loader_kwargs=text_loader_kwargs)
+                loader = DirectoryLoader(
+                    folder,
+                    glob="**/*.md",
+                    loader_cls=TextLoader,
+                    loader_kwargs=text_loader_kwargs,
+                )
                 folder_docs = loader.load()
                 for doc in folder_docs:
                     doc.metadata["doc_type"] = doc_type
@@ -69,7 +78,7 @@ class VectorDBGenerator:
         except Exception as e:
             print(f"Error while processing documents in folder '{folder}': {e}")
             raise
-        
+
         try:
             text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
             chunks = text_splitter.split_documents(documents)
@@ -81,18 +90,25 @@ class VectorDBGenerator:
         embeddings = OpenAIEmbeddings()
 
         if os.path.exists(self.vector_db):
-            Chroma(persist_directory=self.vector_db, embedding_function=embeddings).delete_collection()
-        
+            Chroma(
+                persist_directory=self.vector_db, embedding_function=embeddings
+            ).delete_collection()
+
         try:
-            vectorstore = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=self.vector_db)
-            print(f"Vectorstore created with {vectorstore._collection.count()} documents.")
+            vectorstore = Chroma.from_documents(
+                documents=chunks, embedding=embeddings, persist_directory=self.vector_db
+            )
+            print(
+                f"Vectorstore created with {vectorstore._collection.count()} documents."
+            )
         except Exception as e:
             print(f"Error while creating the vectorstore: {e}")
             raise
-        
+
         print(f"Vectorstore created with {vectorstore._collection.count()} documents")
 
         return {"status": "Vector database generation initiated."}
+
 
 # Example usage in a Cloud Function
 @functions_framework.http
