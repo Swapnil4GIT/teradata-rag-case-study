@@ -32,7 +32,7 @@ class VectorDBGenerator:
         self.vector_db = os.getenv("vector_db")
         self.project_id = os.getenv("project_id")
         self.project_number = os.getenv("project_number")
-
+        self.bucket_name = os.getenv("bucket_name")
         # Log the loaded environment variables
         print(f"llm_key: {self.llm_key}")
         print(f"knowledge_base: {self.knowledge_base}")
@@ -110,7 +110,7 @@ class VectorDBGenerator:
         try:
             self.gcs_manager.upload_to_gcs(
                 source_directory=self.vector_db,
-                bucket_name=self.knowledge_base,
+                bucket_name=self.bucket_name,
                 destination_prefix="vector_db",
             )
             print("Vector database uploaded to GCS successfully.")
