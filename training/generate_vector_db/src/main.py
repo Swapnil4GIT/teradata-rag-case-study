@@ -3,6 +3,12 @@ import os
 import logging
 from dotenv import load_dotenv
 from SecretManager import SecretManager
+import glob
+from langchain.document_loaders import DirectoryLoader, TextLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.schema import Document
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_chroma import Chroma
 
 logging.basicConfig(
     level=logging.INFO,  # Set the logging level to INFO
@@ -25,40 +31,68 @@ class VectorDBGenerator:
         self.project_number = os.getenv("project_number")
 
         # Log the loaded environment variables
-        logger.info(f"llm_key: {self.llm_key}")
-        logger.info(f"knowledge_base: {self.knowledge_base}")
-        logger.info(f"vector_db: {self.vector_db}")
+        print(f"llm_key: {self.llm_key}")
+        print(f"knowledge_base: {self.knowledge_base}")
+        print(f"vector_db: {self.vector_db}")
 
         # Initialize the SecretManager
         self.secret_manager = SecretManager(self.project_number)
-
-    def get_llm_key(self):
-        """
-        Retrieve the OpenAI API key from Google Secret Manager.
-        
-        Returns:
-            str: The OpenAI API key.
-        """
-        return self.secret_manager.get_secret("llm_key")
+        os.environ["OPENAI_API_KEY"] = self.secret_manager.get_secret("llm_key")
 
     def generate(self, request):
         """
-        Main method to handle the vector database generation logic.
-        
-        Args:
-            request: The HTTP request object.
-
-        Returns:
-            dict: A response dictionary indicating success or failure.
+        Generate the vector database using the provided request data.        
         """
+        print("Received request for vector generation.")
+        
         try:
-            llm_key = self.get_llm_key()
-            logger.info(f"Retrieved OpenAI API Key:")
-            # Add your vector database generation logic here
-            return {"status": "success", "message": "Vector database generated successfully"}
+            folders = glob.glob("knowledge-base/*")
+            if not folders:
+                raise FileNotFoundError("No folders found in the 'knowledge-base' directory.")
+        except FileNotFoundError as fnf_error:
+            print(f"File not found error: {fnf_error}")
+            raise
         except Exception as e:
-            logger.error(f"Error generating vector database: {e}")
-            return {"status": "error", "message": str(e)}
+            print(f"Unexpected error while accessing folders: {e}")
+            raise
+        
+        text_loader_kwargs = {'encoding': 'utf-8'}
+        documents = []
+        try:
+            for folder in folders:
+                doc_type = os.path.basename(folder)
+                loader = DirectoryLoader(folder, glob="**/*.md", loader_cls=TextLoader, loader_kwargs=text_loader_kwargs)
+                folder_docs = loader.load()
+                for doc in folder_docs:
+                    doc.metadata["doc_type"] = doc_type
+                    documents.append(doc)
+        except Exception as e:
+            print(f"Error while processing documents in folder '{folder}': {e}")
+            raise
+        
+        try:
+            text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+            chunks = text_splitter.split_documents(documents)
+            print(f"Loaded {len(chunks)} chunks from the documents.")
+        except Exception as e:
+            print(f"Error while splitting documents into chunks: {e}")
+            raise
+
+        embeddings = OpenAIEmbeddings()
+
+        if os.path.exists(self.vector_db):
+            Chroma(persist_directory=self.vector_db, embedding_function=embeddings).delete_collection()
+        
+        try:
+            vectorstore = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=self.vector_db)
+            print(f"Vectorstore created with {vectorstore._collection.count()} documents.")
+        except Exception as e:
+            print(f"Error while creating the vectorstore: {e}")
+            raise
+        
+        print(f"Vectorstore created with {vectorstore._collection.count()} documents")
+
+        return {"status": "Vector database generation initiated."}
 
 # Example usage in a Cloud Function
 @functions_framework.http
