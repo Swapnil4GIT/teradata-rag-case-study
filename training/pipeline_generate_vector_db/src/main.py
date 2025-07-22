@@ -1,26 +1,55 @@
 import functions_framework
 import os
-import glob
-from dotenv import load_dotenv
-from langchain.document_loaders import TextLoader, DirectoryLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.schema import Document
-from langchain_openai import OpenAIEmbeddings
-from langchain_chroma import Chroma
 import logging
-
+from dotenv import load_dotenv
 from shared.SecretManager import SecretManager
 
 logger = logging.getLogger(__name__)
 
+class VectorDBGenerator:
+    def __init__(self):
+        """
+        Initialize the VectorDBGenerator by loading environment variables and setting up the SecretManager.
+        """
+        # Load environment variables
+        load_dotenv()
+        self.llm_key = os.getenv("llm_key")
+        self.knowledge_base = os.getenv("knowledge_base")
+        self.vector_db = os.getenv("vector_db")
+        self.project_id = os.getenv("project_id")
+        self.project_number = os.getenv("project_number")
+
+        # Log the loaded environment variables
+        logger.info(f"llm_key: {self.llm_key}")
+        logger.info(f"knowledge_base: {self.knowledge_base}")
+        logger.info(f"vector_db: {self.vector_db}")
+
+        # Initialize the SecretManager
+        self.secret_manager = SecretManager(self.project_number)
+
+    def get_llm_key(self):
+        """
+        Retrieve the OpenAI API key from Google Secret Manager.
+        
+        Returns:
+            str: The OpenAI API key.
+        """
+        return self.secret_manager.get_secret("llm_key")
+
+    def generate(self, request):
+        """
+        Main method to handle the vector database generation logic.
+        
+        Args:
+            request: The HTTP request object.
+        """
+        llm_key = self.get_llm_key()
+        logger.info(f"Retrieved OpenAI API Key")
+        # Add your vector database generation logic here
+        pass
+
+# Example usage in a Cloud Function
 @functions_framework.http
 def generate_vector_db(request):
-    # Load environment variables
-    load_dotenv()
-    llm_key = os.getenv("llm_key")
-    knowledge_base = os.getenv("knowledge_base")
-    vector_db = os.getenv("vector_db")
-    # Get the directory path from the request
-    logger.info(f"llm_key: {llm_key}")
-    logger.info(f"knowledge_base: {knowledge_base}")
-    logger.info(f"vector_db: {vector_db}")
+    generator = VectorDBGenerator()
+    generator.generate(request)

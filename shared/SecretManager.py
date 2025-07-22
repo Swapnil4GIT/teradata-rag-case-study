@@ -31,6 +31,6 @@ class SecretManager:
 
 # Example usage
 if __name__ == "__main__":
-    project_id = "your_project_id"  # Replace with your actual project ID
-    secret_manager = SecretManager(project_id)
+    project_number = "your_project_number"  # Replace with your actual project ID
+    secret_manager = SecretManager(project_number)
     openai_api_key = secret_manager.get_secret("openai-api-key")
