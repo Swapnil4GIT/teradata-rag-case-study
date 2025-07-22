@@ -7,7 +7,8 @@ packages = [{ include = "base_image" }]
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-pandas = "*"
+fastapi = "^0.116.1"
+uvicorn = "^0.35.0"
 
 
 [tool.poetry.dev-dependencies]
