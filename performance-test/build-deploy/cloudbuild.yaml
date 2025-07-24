@@ -1,0 +1,20 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: "Build and Deploy Vector DB"
+    timeout: "600s"
+    args:
+      - functions
+      - deploy
+      - perf_test_support_agent
+      - --gen2
+      - --region=us-central1
+      - --memory=512Mi
+      - --timeout=3600s
+      - --source=performance-test/src
+      - --runtime=python311
+      - --entry-point=perf_test_support_agent
+      - --trigger-http
+      - --service-account=270035285032-compute@developer.gserviceaccount.com
+      - --env-vars-file=performance-test/build-deploy/.env.yaml
+options:
+  logging: CLOUD_LOGGING_ONLY

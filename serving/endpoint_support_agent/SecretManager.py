@@ -22,7 +22,10 @@ class SecretManager:
         secret_resource_name = f"projects/{self.project_number}/secrets/{secret_name}/versions/1"
 
         # Access the secret
-        response = self.client.access_secret_version(name=secret_resource_name)
+        try:
+            response = self.client.access_secret_version(name=secret_resource_name)
+        except Exception as e:
+            raise RuntimeError(f"Failed to access secret '{secret_name}': {e}")
 
         # Extract the secret payload
         secret_payload = response.payload.data.decode("UTF-8")
