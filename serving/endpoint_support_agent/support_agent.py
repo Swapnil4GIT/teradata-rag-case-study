@@ -1,5 +1,6 @@
 import logging
 import os
+from time import time
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -95,7 +96,9 @@ def predict(payload: dict[str, str]):
             query=request.query,
             prompt_name="system_prompt",
         )
+        llm_start_time = time()
         response = llm.invoke(request.query)
+        logger.info(f"LLM call latency in seconds: {time()-llm_start_time:.2f}")
         return {"response": response}
     except Exception as e:
         logger.info(f"Error during prediction: {e}")
