@@ -19,6 +19,7 @@ openai = "^1.97.0"
 chromadb = "^1.0.15"
 google-cloud-secret-manager = "^2.24.0"
 google-cloud-storage = "^3.2.0"
+gradio = "^5.38.1"
 
 
 [tool.poetry.dev-dependencies]
