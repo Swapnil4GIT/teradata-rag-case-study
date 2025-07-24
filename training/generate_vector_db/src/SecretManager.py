@@ -1,5 +1,6 @@
 from google.cloud import secretmanager
 
+
 class SecretManager:
     def __init__(self, project_number):
         """
@@ -11,7 +12,7 @@ class SecretManager:
     def get_secret(self, secret_name):
         """
         Retrieve the secret value from Google Secret Manager.
-        
+
         Args:
             secret_name (str): The name of the secret to retrieve.
 
@@ -19,15 +20,21 @@ class SecretManager:
             str: The secret payload as a string.
         """
         # Build the resource name of the secret
-        secret_resource_name = f"projects/{self.project_number}/secrets/{secret_name}/versions/1"
+        secret_resource_name = (
+            f"projects/{self.project_number}/secrets/{secret_name}/versions/1"
+        )
 
         # Access the secret
-        response = self.client.access_secret_version(name=secret_resource_name)
+        try:
+            response = self.client.access_secret_version(name=secret_resource_name)
+        except Exception as e:
+            raise RuntimeError(f"Failed to access secret '{secret_name}': {e}")
 
         # Extract the secret payload
         secret_payload = response.payload.data.decode("UTF-8")
 
         return secret_payload
+
 
 # Example usage
 if __name__ == "__main__":
