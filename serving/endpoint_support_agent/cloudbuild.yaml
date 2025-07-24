@@ -10,7 +10,7 @@ steps:
       - "-t"
       - "us-central1-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY_NAME}/${_ARTIFACT_ID}:serving_${_ARTIFACT_VERSION}"
       - "-f"
-      - "${_BUILD_CONTEXT}"
+      - "${_BUILD_CONTEXT}/Dockerfile"
       - "."
   
   - name: 'gcr.io/cloud-builders/docker'
