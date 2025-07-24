@@ -8,10 +8,12 @@ WORKDIR /opt/app
 COPY . .
 
 # Install the dependencies
-RUN pip install --no-deps -e .
+# RUN pip install --no-deps -e .
+
+ENV PYTHONPATH="/opt/app"
 
 # Expose the port FastAPI will run on
 EXPOSE 8000
 
 # Command to run the application
-CMD ["uvicorn", "support_agent:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "uvicorn", "support_agent:app", "--host", "0.0.0.0", "--port", "8000"]
