@@ -11,7 +11,7 @@ steps:
       - "us-central1-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY_NAME}/${_ARTIFACT_ID}:serving_${_ARTIFACT_VERSION}"
       - "-f"
       - "${_BUILD_CONTEXT}/Dockerfile"
-      - "."
+      - "${_BUILD_CONTEXT}"
   
   - name: 'gcr.io/cloud-builders/docker'
     id: "Push Support Agent Image"
