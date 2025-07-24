@@ -7,6 +7,7 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 from llm_request import LLMRequest
 from schema import PredictRequest
+from SecretManager import SecretManager
 
 logger = logging.getLogger(__name__)
 
@@ -28,8 +29,11 @@ def load_resources():
 
     try:
         load_dotenv()
+        # os.environ["OPENAI_API_KEY"] = os.getenv("llm_key", "dummy")
         PERSISTENCE_DIR = os.getenv("persistence_dir", "vector_db")
-        os.environ["OPENAI_API_KEY"] = os.getenv("llm_key", "dummy")
+        project_number = os.getenv("project_number", "270035285032")
+        secret_manager = SecretManager(project_number)
+        os.environ["OPENAI_API_KEY"] = secret_manager.get_secret("llm_key")
 
         # Initialize embeddings
         embeddings = OpenAIEmbeddings()
