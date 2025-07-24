@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
@@ -6,6 +7,8 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import ConfigurableFieldSpec
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
+
+logger = logging.getLogger(__name__)
 
 _llm_name = "gpt-4o-mini"
 _llm_temp = 0.5
@@ -44,7 +47,7 @@ class LLMRequest:
         )
         for doc in documents:
             prompt += "\n" + doc
-        print(prompt)
+        logger.info(f"Prompt to LLM\n: {prompt}")
 
         llm_model = ChatOpenAI(
             model=self.llm_name,

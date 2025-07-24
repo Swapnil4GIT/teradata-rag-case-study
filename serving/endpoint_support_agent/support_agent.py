@@ -1,3 +1,4 @@
+import logging
 import os
 
 from dotenv import load_dotenv
@@ -6,6 +7,9 @@ from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 from llm_request import LLMRequest
 from schema import PredictRequest
+from SecretManager import SecretManager
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -21,32 +25,35 @@ def load_resources():
     Initializes embeddings and vectorstore.
     """
     global embeddings, vectorstore
-    print("Initializing resources during app startup...")
+    logger.info("Starting up the support agent application...")
 
     try:
         load_dotenv()
+        # os.environ["OPENAI_API_KEY"] = os.getenv("llm_key", "dummy")
         PERSISTENCE_DIR = os.getenv("persistence_dir", "vector_db")
-        os.environ["OPENAI_API_KEY"] = os.getenv("llm_key", "dummy")
+        project_number = os.getenv("project_number", "270035285032")
+        secret_manager = SecretManager(project_number)
+        os.environ["OPENAI_API_KEY"] = secret_manager.get_secret("llm_key")
 
         # Initialize embeddings
         embeddings = OpenAIEmbeddings()
-        print("Embeddings initialized successfully.")
+        logger.info("Embeddings initialized successfully.")
 
         # Initialize vectorstore
         vectorstore = Chroma(
             persist_directory=PERSISTENCE_DIR, embedding_function=embeddings
         )
-        print("Vectorstore loaded successfully.")
+        logger.info("Vectorstore loaded successfully.")
 
         collection = vectorstore._collection
         sample_embedding = collection.get(limit=1, include=["embeddings"])[
             "embeddings"
         ][0]
         dimensions = len(sample_embedding)
-        print(f"The vectors have {dimensions:,} dimensions")
+        logger.info(f"The vectors have {dimensions:,} dimensions")
 
     except Exception as e:
-        print(f"Error during startup initialization: {e}")
+        logger.error(f"Error during startup initialization: {e}")
         raise
 
 
@@ -57,9 +64,9 @@ def predict(payload: dict[str, str]):
     """
     try:
         request = PredictRequest.from_dict(payload)
-        print(request.query)
-        print(request.query_id)
-        print(request.session_id)
+        logger.info(request.query)
+        logger.info(request.query_id)
+        logger.info(request.session_id)
         llm = LLMRequest(
             vectorstore=vectorstore,
             query=request.query,
@@ -68,5 +75,5 @@ def predict(payload: dict[str, str]):
         response = llm.invoke(request.query)
         return {"response": response}
     except Exception as e:
-        print(f"Error during prediction: {e}")
+        logger.info(f"Error during prediction: {e}")
         return {"error": "An error occurred during prediction."}
