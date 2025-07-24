@@ -1,8 +1,11 @@
+from uuid import uuid4
+
 import gradio as gr
 import requests
 
 # Define the FastAPI endpoint
 FASTAPI_URL = "http://127.0.0.1:8000/predict"
+
 
 # Function to send a JSON payload to the FastAPI server
 def chatbot_interface(user_input):
@@ -10,8 +13,8 @@ def chatbot_interface(user_input):
         # Prepare the JSON payload
         payload = {
             "query": user_input,
-            "query_id": "12345",  # Example query ID
-            "session_id": "session_1",  # Example session ID
+            "query_id": uuid4().hex,
+            "session_id": uuid4().hex,
         }
 
         # Send the POST request to the FastAPI server
@@ -25,13 +28,14 @@ def chatbot_interface(user_input):
     except Exception as e:
         return f"Error: {str(e)}"
 
+
 # Create the Gradio interface
 interface = gr.Interface(
     fn=chatbot_interface,
     inputs="text",
     outputs="text",
-    title="FastAPI Chatbot",
-    description="Enter a message to interact with the FastAPI chatbot.",
+    title="Employee Support Agent",
+    description="Enter a message to interact with the Support Agent chatbot.",
 )
 
 # Launch the Gradio app

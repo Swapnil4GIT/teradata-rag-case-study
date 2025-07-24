@@ -20,6 +20,6 @@ class AIEndpoint:
         """
         Retrieve documents from the vectorstore based on the query.
         """
-        documents = vectorstore.similarity_search(query, k=5)
+        documents = vectorstore.similarity_search(query, k=25)
         documents = [doc.page_content for doc in documents]
         return documents

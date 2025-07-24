@@ -6,6 +6,12 @@ from fastapi import FastAPI
 from langchain_chroma import Chroma
 from langchain_openai import OpenAIEmbeddings
 from llm_request import LLMRequest
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
+
+# Import OpenTelemetry and Dynatrace
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from schema import PredictRequest
 from SecretManager import SecretManager
 
@@ -16,6 +22,23 @@ app = FastAPI()
 # Global variables for embeddings and vectorstore
 embeddings = None
 vectorstore = None
+
+# Initialize OpenTelemetry tracing
+# TBD - Due to dynatrace account not available for me. I need a dynatrace host
+# def init_tracing():
+#     provider = TracerProvider()
+#     exporter = OTLPSpanExporter(
+#         endpoint=os.getenv("DYNATRACE_OTLP_ENDPOINT", "https://<YOUR_ENVIRONMENT_ID>.live.dynatrace.com/api/v2/otlp/v1/traces"),
+#         headers={"Authorization": f"Api-Token {os.getenv('DYNATRACE_API_TOKEN')}"}
+#     )
+#     provider.add_span_processor(BatchSpanProcessor(exporter))
+#     FastAPIInstrumentor.instrument_app(app, tracer_provider=provider)
+
+# TBD - Due to dynatrace host not available
+# @app.on_event("startup")
+# def startup_event():
+#     init_tracing()
+#     logger.info("Tracing initialized successfully.")
 
 
 @app.on_event("startup")
