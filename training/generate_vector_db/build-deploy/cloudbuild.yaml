@@ -1,3 +1,4 @@
+# Change project number in SA. I have masked it for now. 
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     id: "Build and Deploy Vector DB"
@@ -14,7 +15,7 @@ steps:
       - --runtime=python311
       - --entry-point=generate_vector_db
       - --trigger-http
-      - --service-account=270035285032-compute@developer.gserviceaccount.com
+      - --service-account=<project-number>-compute@developer.gserviceaccount.com
       - --env-vars-file=training/generate_vector_db/build-deploy/.env.yaml
 options:
   logging: CLOUD_LOGGING_ONLY

@@ -1,3 +1,4 @@
+# I have masked project number. Use yours for deployment.
 steps:
   - name: 'gcr.io/cloud-builders/gcloud'
     id: "Build and Deploy Vector DB"
@@ -14,7 +15,7 @@ steps:
       - --runtime=python311
       - --entry-point=perf_test_support_agent
       - --trigger-http
-      - --service-account=270035285032-compute@developer.gserviceaccount.com
+      - --service-account=<project-number>-compute@developer.gserviceaccount.com
       - --env-vars-file=performance-test/build-deploy/.env.yaml
 options:
   logging: CLOUD_LOGGING_ONLY
