@@ -45,6 +45,21 @@
   - Open the gradio local app url in browser and chat with the chatbot
 * Execute below command to turn it off -
   - In each terminal ctrl+c
+
+# Screenshots from my system
+
+* Sample Query1
+  <img width="1673" height="587" alt="test1" src="https://github.com/user-attachments/assets/6ce33f9e-5246-4ab8-ad07-a517c48c6eb3" />
+
+* Sample Query2
+  <img width="1611" height="621" alt="test2" src="https://github.com/user-attachments/assets/7bfedc47-0517-46b6-a715-ea6fcfc8c2f2" />
+
+* Terminal Http api status
+  <img width="1668" height="945" alt="Terminal" src="https://github.com/user-attachments/assets/78bd6630-d66a-4602-a3ec-d83d968a4fc6" />
+
   
+
+
+
   
 
