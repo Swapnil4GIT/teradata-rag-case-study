@@ -57,6 +57,14 @@
 * Terminal Http api status
   <img width="1668" height="945" alt="Terminal" src="https://github.com/user-attachments/assets/78bd6630-d66a-4602-a3ec-d83d968a4fc6" />
 
+# Sample Queries for users to try
+
+* Tell me about your insurance products
+* Which employee got the prestigious award
+* What is insurellm?
+* What is Samantha Green's career history?
+* What is compensation history of Emily?
+
   
 
 
